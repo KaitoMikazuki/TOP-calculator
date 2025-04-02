@@ -1,0 +1,15 @@
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.calculator{
+    background-color: black;
+    width: 400px;
+    height:500px;
+}
+
+.operators{
+    /* diff color */
+}
