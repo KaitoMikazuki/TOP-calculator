@@ -1,13 +1,33 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
 body{
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-family: "Roboto"
 }
 
 .calculator{
     background-color: black;
     width: 400px;
-    height:500px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.screen-display{
+    background-color: white;
+    padding: 15px;
+    margin: 30px;
+    text-align: left;
+}
+
+.display-text{
+    font-size: 26px;
+    font-weight: 300;
 }
 
 .operators{
