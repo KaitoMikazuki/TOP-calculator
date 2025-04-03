@@ -7,10 +7,10 @@
 let x;
 let y;
 let operation;
-let operationSelected = false;
+let inputVariableY = false;
 
-// Used to validate user input 
 function main (){
+    // sets are used to validate user input 
     let numbers = new Set([0,1,2,3,4,5,6,7,8,9]);
     let operations = new Set(["+","-","x","÷"]);
     let actions = new Set (["=","AC","+/-","%","."]);
@@ -29,27 +29,25 @@ function getUserInput(event){
 
     userInput = event.target.textContent;
     console.log(`${userInput} pressed`)
-    
 
+
+    // This series of ifs are used to validate userInput first before proceeding
     if (operations.has(userInput)){
-        operationSelected = true;
+        if (inputVariableY == true){
+            operate()
+        }
         operation = userInput;
     }
 
     else if(actions.has(userInput)){
-        
+        processUserAction(userInput);
     }
 
     else if(numbers.has(Number(userInput))){
-        // If an operator has not been pressed yet, blablabla
+        processNumberEntered(userInput)
     }
-
-
 }
 
-function allowInputVariableY (){
-    
-}
 
 function operate(x,operation,y){
     switch(operation){
@@ -68,6 +66,41 @@ function operate(x,operation,y){
     }
 }
 
+
+function processNumberEntered (number){
+    // Times 10 shifts the digit to the left place value
+    if (operation != ""){
+        y += (x * 10) + number;
+    }
+    else{
+        x += (x * 10) + number;
+    }
+}
+
+function processUserAction(action){
+    switch (action){
+        case "=":
+            processEquation(action);
+            break;
+        case "AC":
+            
+            break;
+        case "+/-":
+                    
+            break;
+        case "%":
+                        
+            break;    
+        case ".":
+                            
+            break;                     
+    }
+}
+
+
+function updateDisplay()
+
+// Arithmethic operations from this point on
 function add(x,y){
     return x + y;
 }
