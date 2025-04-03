@@ -64,6 +64,6 @@ body{
 .row {
     display: flex;
     justify-content: space-evenly;
-    gap: 24px;
+    gap: 20px;
     padding:0 20px;
 }
