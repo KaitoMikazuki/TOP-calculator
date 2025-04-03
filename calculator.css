@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body{
@@ -10,12 +11,30 @@ body{
     font-family: "Roboto"
 }
 
+
 .calculator{
     background-color: black;
     width: 400px;
-    height: 500px;
+    height: 575px;
     display: flex;
     flex-direction: column;
+    border-radius: 20px;
+    margin: 20px;
+}
+
+.calc-keyboard{
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow:hidden;
+}
+
+.equal-sign {
+    border-radius: 100px;
+    font-size: 32px;
+    width: 167px;
+    flex: 1 1 1;
 }
 
 .screen-display{
@@ -26,10 +45,25 @@ body{
 }
 
 .display-text{
-    font-size: 26px;
-    font-weight: 300;
+    font-size: 32px;
+    font-weight: 400;
+    padding: 6px;
 }
 
 .operators{
     /* diff color */
+}
+
+.kb-button {
+    border-radius: 100px;
+    aspect-ratio: 1/1;
+    font-size: 32px;
+    flex: 1 1 0;
+}
+
+.row {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 24px;
+    padding:0 20px;
 }
