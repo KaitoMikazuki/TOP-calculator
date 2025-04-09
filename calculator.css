@@ -50,15 +50,20 @@ body{
     padding: 6px;
 }
 
-.operators{
-    /* diff color */
-}
-
 .kb-button {
     border-radius: 100px;
     aspect-ratio: 1/1;
     font-size: 32px;
     flex: 1 1 0;
+}
+
+.operation-button{
+    background-color: orange;
+    border: 1px black;
+}
+
+.highlighted-operation-button{
+    background-color: yellow;
 }
 
 .row {
