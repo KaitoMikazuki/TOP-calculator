@@ -1,7 +1,7 @@
 // state of clearness
 // inputvariable y indicates that both x and y are ready, all other numbers inputted will be for y
 
-
+// Global variables !
 let x = 0;
 let y = 0;
 let operation = "";
@@ -10,8 +10,8 @@ let result = null;
 
 // sets are used to validate user input 
 let numbers = new Set([0,1,2,3,4,5,6,7,8,9]);
-let operations = new Set(["+","-","x","÷"]);
-let actions = new Set (["=","AC","+/-","%","."]);
+let operations = new Set(["add","subtract","multiply","divide"]);
+let actions = new Set (["equal","AC","changeSymbol","percent","decimal"]);
 
 document.querySelector(".calc-keyboard").addEventListener("click", getUserInput)
 
@@ -20,23 +20,42 @@ function clearAll(){
     // Resets all variables
     [x,y,operation,inputVariableY,result] = [0,0,"",false,null]
     displayNumber(0);
+    unhighlightPreviousOperation();
 }
 
-function highlightSelectedOperation(operation){
-    curr = document.querySelectorAll(".highlighted-operation-button")
-    console.log(curr)
-    if (curr.length > 1 ){
-        curr.classList.remove(".highlighted-operation-button")
+function highlightSelectedOperation(selectedOperation){
+    unhighlightPreviousOperation();
+    document.querySelector(`#${selectedOperation}`).classList.add("highlighted-operation");
+    console.log(operation);
+}
+
+function unhighlightPreviousOperation(){
+    document.querySelector(".highlighted-operation")?.classList.remove("highlighted-operation");
+    document.querySelector("#equal").classList.add("disallow-equal")
+}
+
+
+function displayNumber(number){
+    document.querySelector(".display-text").textContent = number;
+}
+
+
+function operate(x,operation,y){
+    switch(operation){
+        case "add":
+            result = add(x,y);
+            break;
+        case "subtract":
+            result = subtract(x,y);
+            break;
+        case "multiply":
+            result = multiplication(x,y);
+            break;
+        case "divide":
+            result = divide(x,y);
+            break;
     }
-    ya = document.querySelector(`#${operation}`)
-    console.log(ya)
-    console.log(operation)
-    .classList.add(".highlighted-operation-button")
-}
-
-
-function displayNumber(num){
-    document.querySelector(".display-text").textContent = num;
+    displayNumber(result);
 }
 
 
@@ -45,73 +64,38 @@ function getUserInput(event){
         return 
     }
 
-    userInput = event.target.textContent;
-    console.log(`${userInput} pressed`)
+    userInput = event.target;
+    console.log(`${userInput.id} pressed`)
 
     // This series of ifs are used to validate userInput first before proceeding
-    if (operations.has(userInput)){
-        processOperationEntered(userInput)
+    if (operations.has(userInput.id)){
+        processOperationEntered(userInput.id)
     }
 
-    else if(actions.has(userInput)){
-        processActionEntered(userInput);
+    else if(actions.has(userInput.id)){
+        processActionEntered(userInput.id);
     }
 
-    else if(numbers.has(Number(userInput))){
-        processNumberEntered(Number(userInput))
+    else if(numbers.has(Number(userInput.textContent))){
+        processNumberEntered(Number(userInput.textContent))
         console.log(`x: ${x} y:${y}`)
     }
 }
 
 
-function operate(x,operation,y){
-
-    switch(operation){
-        case "+":
-            result = add(x,y);
-            break;
-        case "-":
-            result = subtract(x,y);
-            break;
-        case "x":
-            result = multiplication(x,y);
-            break;
-        case "÷":
-            result = divide(x,y);
-            break;
-    }
-    return
-    
-    operation = "";
-    y = 0;
-    console.log(result)
-
-    // If an operation was pressed instead of equal, proceed to the y variable 
-    if (nextOperation = ""){
-        inputVariableY = false;
-    }
-    else{
-        x = result;
-        operation = nextOperation;
-    }
-
-}
-
-function prepareForNextOperation(nextOperation){
-
-}
+// The following are function that process the user's input
 
 function processOperationEntered(userInput){
-    if (inputVariableY == true && y){
+    if ((inputVariableY === true && y !== 0) || (operation === "divide" && y === 0)){
         operate(x, operation, y)
         x = result 
         y = 0
-        displayNumber(result)
     }
     else {
-        operation = userInput;
         inputVariableY = true;
     }
+    
+    operation = userInput;
     highlightSelectedOperation(operation);
 }
 
@@ -125,6 +109,7 @@ function processNumberEntered (number){
     if (inputVariableY == true){
         y = (y * 10) + number;
         displayNumber(y);
+        document.querySelector("#equal").classList.remove("disallow-equal")
     }
     else{
         x = (x * 10) + number;
@@ -134,11 +119,11 @@ function processNumberEntered (number){
 
 function processActionEntered(action){
     switch (action){
-        case "=":
+        case "equal":
             if (inputVariableY == true && operation){
                 operate(x,operation,y)
-                displayNumber(result)
             }   
+            unhighlightPreviousOperation();
             operation = ""
             break;
         case "AC":
@@ -171,5 +156,8 @@ function multiplication(x,y){
 }
 
 function divide(x,y){
+    if (y == 0){
+        return NaN
+    }
     return x/y
 }

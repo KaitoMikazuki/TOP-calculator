@@ -35,6 +35,7 @@ body{
     font-size: 32px;
     width: 167px;
     flex: 1 1 1;
+    background-color: orange;
 }
 
 .screen-display{
@@ -62,7 +63,7 @@ body{
     border: 1px black;
 }
 
-.highlighted-operation-button{
+.highlighted-operation{
     background-color: yellow;
 }
 
@@ -71,4 +72,8 @@ body{
     justify-content: space-evenly;
     gap: 20px;
     padding:0 20px;
+}
+
+.disallow-equal{
+    background-color: white;
 }
