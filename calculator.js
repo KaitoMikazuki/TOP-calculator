@@ -7,6 +7,7 @@ let y = 0;
 let operation = "";
 let inputVariableY = false;
 let result = null;
+let negativeMode = false;
 
 // sets are used to validate user input 
 let numbers = new Set([0,1,2,3,4,5,6,7,8,9]);
@@ -18,11 +19,12 @@ document.querySelector(".calc-keyboard").addEventListener("click", getUserInput)
     
 function clearAll(){
     // Resets all variables
-    [x,y,operation,inputVariableY,result] = [0,0,"",false,null]
+    [x,y,operation,inputVariableY,result, negativeMode] = [0,0,"",false,null, false]
     displayNumber(0);
     unhighlightPreviousOperation();
 }
 
+// These two functions deal with UX of highlighting active operations and availability of equals
 function highlightSelectedOperation(selectedOperation){
     unhighlightPreviousOperation();
     document.querySelector(`#${selectedOperation}`).classList.add("highlighted-operation");
@@ -94,15 +96,19 @@ function processOperationEntered(userInput){
     else {
         inputVariableY = true;
     }
-    
+
     operation = userInput;
     highlightSelectedOperation(operation);
+    negativeMode = false;
 }
 
 
 function processNumberEntered (number){
     if (result != null && operation == ""){
         clearAll();
+    }
+    else if(negativeMode === true){
+        number *= -1
     }
 
     // Times 10 shifts the digit to the left place value
@@ -124,13 +130,28 @@ function processActionEntered(action){
                 operate(x,operation,y)
             }   
             unhighlightPreviousOperation();
-            operation = ""
+            operation = "";
+            inputVariableY = false;
+            negativeMode = false;
+            x = result;
+            y = 0;
             break;
+
         case "AC":
             clearAll();
             break;
-        case "+/-":
-              
+
+        // times -1 will change symbol
+        case "changeSymbol":
+            if (inputVariableY == true && y !== 0){
+                y *= -1;
+                displayNumber(y)
+            }
+            else if (inputVariableY == false && x !== 0){
+                x *= -1
+                displayNumber(x)
+            } 
+            negativeMode = !negativeMode
             break;
         case "%":
                         
