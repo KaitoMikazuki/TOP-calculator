@@ -8,6 +8,7 @@ let operation = "";
 let inputVariableY = false;
 let result = null;
 let negativeMode = false;
+let decimalMode = false;
 
 // sets are used to validate user input 
 let numbers = new Set([0,1,2,3,4,5,6,7,8,9]);
@@ -111,14 +112,26 @@ function processNumberEntered (number){
         number *= -1
     }
 
-    // Times 10 shifts the digit to the left place value
-    if (inputVariableY == true){
-        y = (y * 10) + number;
+    // Checks if the second variable is decimal or not to determine how to input
+    else if (inputVariableY == true){
+        if (decimalMode === true){
+            y = Number(String(y) + number);
+        }
+        else {
+            y = (y * 10) + number;
+        }
         displayNumber(y);
         document.querySelector("#equal").classList.remove("disallow-equal")
     }
+
+    // Checks if the first variable is decimal or not to determine how to input
     else{
-        x = (x * 10) + number;
+        if (decimalMode == true){
+            x = Number(String(x) + number);
+        }
+        else{
+            x = (x * 10) + number;
+        }
         displayNumber(x);
     }
 }
@@ -153,11 +166,29 @@ function processActionEntered(action){
             } 
             negativeMode = !negativeMode
             break;
-        case "%":
-                        
+
+        case "percent":
+            if (inputVariableY === true && y !== 0){
+                y /= 100;
+                decimalMode = y % 100 === 1 ? false: true;
+                displayNumber(y)
+            }          
+            else{
+                x /= 100;
+                decimalMode = x % 1 === 0 ? false: true;
+                displayNumber(x);
+            }
             break;    
-        case ".":
-                            
+        case "decimal":
+            decimalMode = true;
+            if (inputVariableY){
+                y = String(y) + ".";
+                displayNumber(y);
+            }
+            else{
+                x = String(x) + ".";
+                displayNumber(x);
+            }
             break;                     
     }
 }
@@ -165,7 +196,7 @@ function processActionEntered(action){
 
 // Arithmethic operations from this point on
 function add(x,y){
-    return x + y;
+    return x + y
 }
 
 function subtract(x,y){
