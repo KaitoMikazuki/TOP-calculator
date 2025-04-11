@@ -2,8 +2,8 @@
 // inputvariable y indicates that both x and y are ready, all other numbers inputted will be for y
 
 // Global variables !
-let x = 0;
-let y = 0;
+let x = null;
+let y = null;
 let operation = "";
 let inputVariableY = false;
 let result = null;
@@ -20,18 +20,17 @@ document.querySelector(".calc-keyboard").addEventListener("click", getUserInput)
     
 function clearAll(){
     // Resets all variables
-    [x,y,operation,inputVariableY,result, negativeMode] = [0,0,"",false,null, false]
+    [x,y,operation,inputVariableY,result, negativeMode, decimalMode] = [null,null,"",false,null,false, false]
     displayNumber(0);
     unhighlightPreviousOperation();
 }
 
-// These two functions deal with UX of highlighting active operations and availability of equals
+// These two functions deal with UX, highlighting selected operation and availability of "=" button
 function highlightSelectedOperation(selectedOperation){
     unhighlightPreviousOperation();
     document.querySelector(`#${selectedOperation}`).classList.add("highlighted-operation");
     console.log(operation);
 }
-
 function unhighlightPreviousOperation(){
     document.querySelector(".highlighted-operation")?.classList.remove("highlighted-operation");
     document.querySelector("#equal").classList.add("disallow-equal")
@@ -42,8 +41,12 @@ function displayNumber(number){
     document.querySelector(".display-text").textContent = number;
 }
 
+// Takes in x, y, and operation
+function operate(){
 
-function operate(x,operation,y){
+    x = Number(x);
+    y = Number(y);
+
     switch(operation){
         case "add":
             result = add(x,y);
@@ -62,15 +65,15 @@ function operate(x,operation,y){
 }
 
 
+// Validates user input into 3 categories, operations, actions, and numbers.
 function getUserInput(event){
     if (event.target.tagName === "DIV"){
         return 
     }
-
     userInput = event.target;
     console.log(`${userInput.id} pressed`)
 
-    // This series of ifs are used to validate userInput first before proceeding
+
     if (operations.has(userInput.id)){
         processOperationEntered(userInput.id)
     }
@@ -81,18 +84,18 @@ function getUserInput(event){
 
     else if(numbers.has(Number(userInput.textContent))){
         processNumberEntered(Number(userInput.textContent))
-        console.log(`x: ${x} y:${y}`)
     }
+    console.log(`x: ${x} y:${y}`)
 }
 
 
-// The following are function that process the user's input
-
+// The following are the helper functions that process the user's input
 function processOperationEntered(userInput){
-    if ((inputVariableY === true && y !== 0) || (operation === "divide" && y === 0)){
-        operate(x, operation, y)
+    // second condition ensures division by 0 will be computed into NaN instead of skipping the operation
+    if (inputVariableY === true && y !== null){
+        operate()
         x = result 
-        y = 0
+        y = null
     }
     else {
         inputVariableY = true;
@@ -105,6 +108,7 @@ function processOperationEntered(userInput){
 
 
 function processNumberEntered (number){
+    // If a number is entered immediately after computation
     if (result != null && operation == ""){
         clearAll();
     }
@@ -112,22 +116,22 @@ function processNumberEntered (number){
         number *= -1
     }
 
-    // Checks if the second variable is decimal or not to determine how to input
-    else if (inputVariableY == true){
+    // Checks if the SECOND variable (y) is a decimal to determine how the number will be inputted
+    if (inputVariableY == true){
         if (decimalMode === true){
-            y = Number(String(y) + number);
+            y += number;
         }
         else {
             y = (y * 10) + number;
         }
         displayNumber(y);
-        document.querySelector("#equal").classList.remove("disallow-equal")
+        document.querySelector("#equal").classList.remove("disallow-equal") // Signals that "=" button can be used
     }
 
-    // Checks if the first variable is decimal or not to determine how to input
+    // Checks if the FIRST variable (x) is a decimal to determine how the number will be inputted
     else{
         if (decimalMode == true){
-            x = Number(String(x) + number);
+            x += number;
         }
         else{
             x = (x * 10) + number;
@@ -146,8 +150,9 @@ function processActionEntered(action){
             operation = "";
             inputVariableY = false;
             negativeMode = false;
-            x = result;
-            y = 0;
+            decimalMode = false;
+            x = result ? result: x;
+            y = null;
             break;
 
         case "AC":
@@ -168,9 +173,10 @@ function processActionEntered(action){
             break;
 
         case "percent":
-            if (inputVariableY === true && y !== 0){
+            if (inputVariableY === true && y !== null){
                 y /= 100;
                 decimalMode = y % 100 === 1 ? false: true;
+                y = decimalMode === true ? String(y): y; 
                 displayNumber(y)
             }          
             else{
@@ -180,12 +186,22 @@ function processActionEntered(action){
             }
             break;    
         case "decimal":
+            if ((inputVariableY === true && String(y).includes(".")) || (inputVariableY === false && String(x).includes(".")) ){
+                break;
+            }
+
             decimalMode = true;
             if (inputVariableY){
+                if (y === null){
+                    y = 0;
+                }
                 y = String(y) + ".";
                 displayNumber(y);
             }
             else{
+                if (x === null){
+                    x = 0;
+                }
                 x = String(x) + ".";
                 displayNumber(x);
             }
