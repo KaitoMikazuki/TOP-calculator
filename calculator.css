@@ -11,7 +11,9 @@ body{
     font-family: "Roboto"
 }
 
-
+.action-button {
+    background-color: lightgray;
+}
 .calculator{
     background-color: black;
     width: 400px;

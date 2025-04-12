@@ -29,7 +29,6 @@ function clearAll(){
 function highlightSelectedOperation(selectedOperation){
     unhighlightPreviousOperation();
     document.querySelector(`#${selectedOperation}`).classList.add("highlighted-operation");
-    console.log(operation);
 }
 function unhighlightPreviousOperation(){
     document.querySelector(".highlighted-operation")?.classList.remove("highlighted-operation");
@@ -62,7 +61,7 @@ function operate(){
             break;
     }
     // This rounds to the second decimal point. The Number.EPSILON is to ensure precision.
-    result = Math.round((result + Number.EPSILON) * 100000) / 100000
+    result = Math.round((result + Number.EPSILON) * 10000) / 10000
     displayNumber(result);
 }
 
@@ -73,7 +72,12 @@ function getUserInput(event){
         return 
     }
     userInput = event.target;
-    console.log(`${userInput.id} pressed`)
+    if (userInput.id){
+        console.log(`${userInput.id} pressed`)
+    }
+    else {
+        console.log(`${userInput.textContent} pressed`)
+    }
 
 
     if (operations.has(userInput.id)){
