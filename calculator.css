@@ -49,6 +49,7 @@ body{
     font-size: 32px;
     font-weight: 400;
     padding: 6px;
+    overflow: scroll;
 }
 
 .kb-button {

@@ -61,6 +61,8 @@ function operate(){
             result = divide(x,y);
             break;
     }
+    // This rounds to the second decimal point. The Number.EPSILON is to ensure precision.
+    result = Math.round((result + Number.EPSILON) * 100000) / 100000
     displayNumber(result);
 }
 
